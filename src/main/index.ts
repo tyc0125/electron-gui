@@ -17,9 +17,11 @@ protocol.registerSchemesAsPrivileged([
     }
   }
 ])
+
+let mainWindow: BrowserWindow | null = null
 function createWindow(): void {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
     show: false,
@@ -32,7 +34,11 @@ function createWindow(): void {
   })
 
   mainWindow.on('ready-to-show', () => {
-    mainWindow.show()
+    mainWindow?.show()
+  })
+
+  mainWindow.on('closed', function () {
+    mainWindow = null
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -47,6 +53,23 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+}
+
+// 检查是否已经有其他实例在运行
+const gotTheLock = app.requestSingleInstanceLock()
+
+if (!gotTheLock) {
+  // 如果未获取到锁，说明已有另一个实例在运行，因此退出应用
+  app.quit()
+} else {
+  // 如果获取到了锁，继续执行以下代码
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    // 当第二个实例启动时，这里会被触发
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore()
+      mainWindow.focus()
+    }
+  })
 }
 
 // This method will be called when Electron has finished
@@ -71,7 +94,7 @@ app.whenReady().then(() => {
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    if (BrowserWindow.getAllWindows().length === 0 || mainWindow === null) createWindow()
   })
 
   function convertPath(originalPath) {
@@ -89,7 +112,9 @@ app.whenReady().then(() => {
   protocol.handle('local-resource', async (request) => {
     // 解码请求URL，去掉协议部分，以获得原始路径。
     // 这里使用正则表达式将"local-resource:/"替换为空字符串，并解码URL编码。
-    const decodedUrl = decodeURIComponent(request.url.replace(new RegExp(`^local-resource:/`, 'i'), ''))
+    const decodedUrl = decodeURIComponent(
+      request.url.replace(new RegExp(`^local-resource:/`, 'i'), '')
+    )
 
     // 打印解码后的URL，以便调试。
     console.log('decodedUrl', decodedUrl)

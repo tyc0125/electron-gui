@@ -10,11 +10,13 @@ module.exports = {
     '!**/.vscode/*',
     '!src/*',
     '!{electron.vite.config.mjs,electron-builder.config.js}',
-    '!{.eslintignore,.eslintrc.js,.prettierignore,.prettierrc.js,dev-app-update.yml,CHANGELOG.md,README.md}',
+    '!{.eslintignore,eslint.config.mjs,.prettierignore,.prettierrc.js,dev-app-update.yml,CHANGELOG.md,README.md}',
     '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
   ],
   asarUnpack: ['resources/**'],
-  electronLanguages: isWin32 ? ['en', 'zh-TW', 'zh-CN', 'en-US', 'en-GB'] : ['en', 'zh_TW', 'zh_CN', 'en_US', 'en_GB'],
+  electronLanguages: isWin32
+    ? ['en', 'zh-TW', 'zh-CN', 'en-US', 'en-GB']
+    : ['en', 'zh_TW', 'zh_CN', 'en_US', 'en_GB'],
   win: {
     icon: 'build/icon.ico',
     target: [{ target: 'nsis', arch: ['x64'] }],
@@ -53,8 +55,10 @@ module.exports = {
     extendInfo: {
       NSCameraUsageDescription: "Application requests access to the device's camera.",
       NSMicrophoneUsageDescription: "Application requests access to the device's microphone.",
-      NSDocumentsFolderUsageDescription: "Application requests access to the user's Documents folder.",
-      NSDownloadsFolderUsageDescription: "Application requests access to the user's Downloads folder."
+      NSDocumentsFolderUsageDescription:
+        "Application requests access to the user's Documents folder.",
+      NSDownloadsFolderUsageDescription:
+        "Application requests access to the user's Downloads folder."
     },
     notarize: false
   },
