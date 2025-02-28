@@ -1,8 +1,9 @@
-import { app, shell, BrowserWindow, ipcMain, protocol } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, protocol, IpcMainEvent } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { promises as fs } from 'fs'
+import { LOG_PARAMS, Log4 } from '../common/log'
 
 // 注册自定义协议方案为特权协议。
 protocol.registerSchemesAsPrivileged([
@@ -35,6 +36,7 @@ function createWindow(): void {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow?.show()
+    initIpc(mainWindow)
   })
 
   mainWindow.on('closed', function () {
@@ -146,3 +148,25 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
+const initIpc = (winodws: BrowserWindow | null) => {
+  ipcMain.on('Log4', (event: IpcMainEvent, arg: LOG_PARAMS) => {
+    const { type, value } = arg
+    switch (type) {
+      case 'info':
+        Log4.info(value)
+        break
+      case 'error':
+        Log4.error(value)
+        break
+      case 'warn':
+        Log4.warn(value)
+        break
+      case 'debug':
+        Log4.debug(value)
+        break
+      default:
+        console.log('Unknown log type:', type, ...value)
+        break
+    }
+  })
+}

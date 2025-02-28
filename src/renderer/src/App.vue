@@ -1,7 +1,10 @@
 <script setup lang="ts">
   import Versions from './components/Versions.vue'
 
-  const ipcHandle = () => window.electron.ipcRenderer.send('ping')
+  const ipcHandle = () => {
+    window.electron.ipcRenderer.send('ping')
+    window.api.Log4('info', 'App.vue')
+  }
 </script>
 
 <template>
