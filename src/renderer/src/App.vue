@@ -3,7 +3,6 @@
   import { Log4 } from '@/common/log'
 
   const ipcHandle = () => {
-    window.electron.ipcRenderer.send('ping')
     Log4.info('App.vue')
   }
 </script>
