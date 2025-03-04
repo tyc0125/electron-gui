@@ -1,20 +1,32 @@
-import { resolve } from 'path'
+import path from 'path'
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
 import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin()]
+    plugins: [externalizeDepsPlugin()],
+    define: {
+      'process.env.VITE_CURRENT_RUN_MODE': JSON.stringify('main'),
+      'import.meta.env.VITE_CURRENT_RUN_MODE': JSON.stringify('main')
+    }
   },
   preload: {
-    plugins: [externalizeDepsPlugin()]
+    plugins: [externalizeDepsPlugin()],
+    define: {
+      'process.env.VITE_CURRENT_RUN_MODE': JSON.stringify('preload'),
+      'import.meta.env.VITE_CURRENT_RUN_MODE': JSON.stringify('preload')
+    }
   },
   renderer: {
     resolve: {
       alias: {
-        '@renderer': resolve('src/renderer/src')
+        '@': path.resolve(__dirname, './src')
       }
     },
-    plugins: [vue()]
+    plugins: [vue()],
+    define: {
+      'process.env.VITE_CURRENT_RUN_MODE': JSON.stringify('renderer'),
+      'import.meta.env.VITE_CURRENT_RUN_MODE': JSON.stringify('renderer')
+    }
   }
 })

@@ -31,32 +31,32 @@ const parseLog = (param: any): string => {
 
 export const Log4 = {
   info: (value: any) => {
-    if (import.meta.env.VITE_CURRENT_RUN_MODE === 'render') {
-      window.electronAPI.Log4('info', parseLog(value))
+    if (import.meta.env.VITE_CURRENT_RUN_MODE === 'renderer') {
+      window.api.Log4('info', parseLog(value))
       console.info(value)
     } else {
       Logger4Instance().info(value)
     }
   },
   warn: (value: any) => {
-    if (import.meta.env.VITE_CURRENT_RUN_MODE === 'render') {
-      window.electronAPI.Log4('warn', parseLog(value))
+    if (import.meta.env.VITE_CURRENT_RUN_MODE === 'renderer') {
+      window.api.Log4('warn', parseLog(value))
       console.warn(value)
     } else {
       Logger4Instance().warn(value)
     }
   },
   error: (value: any) => {
-    if (import.meta.env.VITE_CURRENT_RUN_MODE === 'render') {
-      window.electronAPI.Log4('error', parseLog(value))
+    if (import.meta.env.VITE_CURRENT_RUN_MODE === 'renderer') {
+      window.api.Log4('error', parseLog(value))
       console.error(value)
     } else {
       Logger4Instance().error(value)
     }
   },
   debug: (value: any) => {
-    if (import.meta.env.VITE_CURRENT_RUN_MODE === 'render') {
-      window.electronAPI.Log4('debug', parseLog(value))
+    if (import.meta.env.VITE_CURRENT_RUN_MODE === 'renderer') {
+      window.api.Log4('debug', parseLog(value))
       console.debug(value)
     } else {
       Logger4Instance().debug(value)
